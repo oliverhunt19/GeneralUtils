@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace GeneralUtils
+﻿namespace GeneralUtils
 {
     public class TimerAsyncManager
     {
@@ -24,10 +18,10 @@ namespace GeneralUtils
 
         public async Task Start(TimeSpan dueTime, TimeSpan period, bool canStartNextActionBeforePreviousIsCompleted = false)
         {
-            await (timerAsync?.Stop()).NullableTask();
+            await (timerAsync?.StopAsync()).NullableTask();
             timerAsync?.Dispose();
             timerAsync = new TimerAsync(scheduledAction, dueTime, period, canStartNextActionBeforePreviousIsCompleted);
-            await timerAsync.Start();
+            await timerAsync.StartAsync();
         }
 
         public Task Start(TimeSpan period, bool canStartNextActionBeforePreviousIsCompleted = false)
@@ -41,12 +35,12 @@ namespace GeneralUtils
             {
                 throw new InvalidOperationException();
             }
-            return timerAsync.Start();
+            return timerAsync.StartAsync();
         }
 
         public Task Stop()
         {
-            return (timerAsync?.Stop()).NullableTask();
+            return (timerAsync?.StopAsync()).NullableTask();
         }
     }
 }

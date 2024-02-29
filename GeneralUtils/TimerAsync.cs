@@ -62,10 +62,11 @@
         {
         }
 
+
         /// <summary>
         /// Starts the TimerAsync.
         /// </summary>
-        public async Task Start()
+        public async Task StartAsync()
         {
             if (_disposed)
                 throw new ObjectDisposedException(GetType().FullName);
@@ -93,7 +94,7 @@
         /// Stops the TimerAsync.
         /// </summary>
         /// <returns>A task that completes when the timer is stopped.</returns>
-        public async Task Stop()
+        public async Task StopAsync()
         {
             if (_disposed)
                 throw new ObjectDisposedException(GetType().FullName);

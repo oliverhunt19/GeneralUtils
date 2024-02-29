@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
 
 namespace GeneralUtils
 {
@@ -43,7 +38,7 @@ namespace GeneralUtils
         {
             return Parallel.ForEachAsync(new List<TimerAsync>(this), async (x, y) =>
             {
-                await x.Stop().ConfigureAwait(false);
+                await x.StopAsync().ConfigureAwait(false);
             });
         }
     }
