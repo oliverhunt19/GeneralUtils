@@ -12,8 +12,8 @@
         private readonly Func<CancellationToken, Task> _scheduledAction;
         private readonly TimeSpan _dueTime;
         private readonly TimeSpan _period;
-        private CancellationTokenSource _cancellationSource;
-        private Task _scheduledTask;
+        private CancellationTokenSource? _cancellationSource;
+        private Task? _scheduledTask;
         private readonly SemaphoreSlim _semaphore;
         private bool _disposed;
         private readonly bool _canStartNextActionBeforePreviousIsCompleted;
@@ -68,8 +68,7 @@
         /// </summary>
         public async Task StartAsync()
         {
-            if (_disposed)
-                throw new ObjectDisposedException(GetType().FullName);
+            ObjectDisposedException.ThrowIf(_disposed,this);
 
             await _semaphore.WaitAsync().ConfigureAwait(false);
 
@@ -96,8 +95,7 @@
         /// <returns>A task that completes when the timer is stopped.</returns>
         public async Task StopAsync()
         {
-            if (_disposed)
-                throw new ObjectDisposedException(GetType().FullName);
+            ObjectDisposedException.ThrowIf(_disposed, this);
 
             await _semaphore.WaitAsync().ConfigureAwait(false);
 
@@ -106,9 +104,9 @@
                 if (!IsRunning)
                     return;
 
-                _cancellationSource.Cancel();
+                _cancellationSource?.Cancel();
 
-                await _scheduledTask.ConfigureAwait(false);
+                await _scheduledTask.NullableTask().ConfigureAwait(false);
             }
             catch (OperationCanceledException) { }
             finally
@@ -120,6 +118,10 @@
 
         private Task RunScheduledAction()
         {
+            if (_cancellationSource is null)
+            {
+                throw new ArgumentNullException(nameof(_cancellationSource), "The cancelation token source is null so cannot run this looped timer");
+            }
             return Task.Run(async () =>
             {
                 try
