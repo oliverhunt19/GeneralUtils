@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace GeneralUtils
+﻿namespace GeneralUtils
 {
     public static class NullableTaskHelpers
     {
@@ -34,10 +28,15 @@ namespace GeneralUtils
 
         public static Task<T?> NullableTask<T>(this Task<T?>? task, out bool IsNotNull)
         {
-            if (task == null)
+            return task.NullableTask(default, out IsNotNull);
+        }
+
+        public static Task<T?> NullableTask<T>(this Task<T?>? task, T? defaultValue, out bool IsNotNull)
+        {
+            if(task == null)
             {
                 IsNotNull = false;
-                return Task.FromResult(default(T));
+                return Task.FromResult(defaultValue);
             }
             else
             {
