@@ -36,9 +36,9 @@ namespace GeneralUtils
 
         public Task StopAll()
         {
-            return Parallel.ForEachAsync(new List<TimerAsync>(this), async (x, y) =>
+            return Parallel.ForEachAsync(new List<TimerAsync>(this), (x, y) =>
             {
-                await x.StopAsync().ConfigureAwait(false);
+                return new ValueTask(x.StopAsync());
             });
         }
     }
