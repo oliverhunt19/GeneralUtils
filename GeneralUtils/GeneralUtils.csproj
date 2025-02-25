@@ -4,7 +4,13 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Configurations>Debug;Release;Develop_Debug</Configurations>
+    <Configurations>Debug;Release;Develop_Debug;Develop_Release</Configurations>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Messing\**" />
+    <EmbeddedResource Remove="Messing\**" />
+    <None Remove="Messing\**" />
+  </ItemGroup>
 
 </Project>
