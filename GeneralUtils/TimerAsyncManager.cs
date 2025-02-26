@@ -4,7 +4,7 @@
     {
         private TimerAsync? timerAsync;
 
-        private Func<CancellationToken, Task> scheduledAction;
+        private readonly Func<CancellationToken, Task> scheduledAction;
 
         public bool IsRunning => timerAsync?.IsRunning ?? false;
 
@@ -18,12 +18,18 @@
 
         }
 
-        public async Task Start(TimeSpan dueTime, TimeSpan period, bool canStartNextActionBeforePreviousIsCompleted = false)
+        public async Task Start(TimeSpan dueTime, TimeSpan period, bool canStartNextActionBeforePreviousIsCompleted = false, CancellationToken cancellationToken = default)
         {
-            await (timerAsync?.StopAsync()).NullableTask().ConfigureAwait(false);
+            bool waitForPreviousToFinish = true;
+            Task stoppingTask = (timerAsync?.StopAsync(cancellationToken)).NullableTask();
+            if(waitForPreviousToFinish)
+            {
+                await stoppingTask.ConfigureAwait(false);
+            }
+            
             timerAsync?.Dispose();
             timerAsync = new TimerAsync(scheduledAction, dueTime, period, canStartNextActionBeforePreviousIsCompleted);
-            await timerAsync.StartAsync().ConfigureAwait(false);
+            await timerAsync.StartAsync(cancellationToken).ConfigureAwait(false);
         }
 
         public Task Start(TimeSpan period, bool canStartNextActionBeforePreviousIsCompleted = false)

@@ -66,11 +66,11 @@
         /// <summary>
         /// Starts the TimerAsync.
         /// </summary>
-        public async Task StartAsync()
+        public async Task StartAsync(CancellationToken cancellationToken = default)
         {
             ObjectDisposedException.ThrowIf(_disposed,this);
 
-            await _semaphore.WaitAsync().ConfigureAwait(false);
+            await _semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
             try
             {
@@ -93,11 +93,11 @@
         /// Stops the TimerAsync.
         /// </summary>
         /// <returns>A task that completes when the timer is stopped.</returns>
-        public async Task StopAsync()
+        public async Task StopAsync(CancellationToken cancellationToken = default)
         {
             ObjectDisposedException.ThrowIf(_disposed, this);
 
-            await _semaphore.WaitAsync().ConfigureAwait(false);
+            await _semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
             try
             {
@@ -122,6 +122,7 @@
             {
                 throw new ArgumentNullException(nameof(_cancellationSource), "The cancelation token source is null so cannot run this looped timer");
             }
+
             return Task.Run(async () =>
             {
                 try
